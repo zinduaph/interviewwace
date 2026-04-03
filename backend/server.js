@@ -1,5 +1,10 @@
 import dotenv from 'dotenv';
 dotenv.config({path:'./.env'});
+
+if (!process.env.GEMINI_API_KEY) {
+  console.error('GEMINI_API_KEY not found in .env');
+}
+
 import cors from 'cors';
 import express from 'express';
 import connectDB from './config/connectDB.js';
