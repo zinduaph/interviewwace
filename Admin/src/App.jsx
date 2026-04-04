@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginPage from './components/loginPage';
 import UsersPage from './components/users';
 import ApiUsage from './pages/apiUsage';
-const backendUrl = import.meta.env.VITE_BACKEND_URL
+ export const backendUrl = import.meta.env.VITE_BACKEND_URL
 // Protected Route wrapper
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('adminToken');
