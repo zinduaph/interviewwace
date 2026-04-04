@@ -416,7 +416,7 @@ export const getPaymentStatus = async (req, res) => {
     }
 };
 
-
+const forntendUrl = process.env.FRONTEND_URL
 // paystack API route using axios
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 const PAYSTACK_BASE_URL = 'https://api.paystack.co';
@@ -448,7 +448,7 @@ export const initializePaystack = async (req, res) => {
                 email,
                 amount: amount,
                 currency: 'KES',
-                callback_url: 'http://localhost:5173/interviewPage',
+                callback_url: `${forntendUrl}/interviewPage`,
                 metadata:{
                     clerkId,
                     plan
