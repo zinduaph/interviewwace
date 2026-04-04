@@ -200,7 +200,7 @@ const Demo = () => {
         setIsTimerActive(false);
         
         try {
-            const response = await fetch('http://localhost:8000/api/demo/save-answers', {
+            const response = await fetch(`${backendUrl}/api/demo/save-answers`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -213,7 +213,7 @@ const Demo = () => {
             // After successful submission, increment demo count
              if (clerkId) {
     try {
-        await fetch('http://localhost:8000/api/demo/increment', {
+        await fetch(`${backendUrl}/api/demo/increment`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ clerkId })
