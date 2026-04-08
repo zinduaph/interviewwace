@@ -15,11 +15,11 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${backendUrl}/api/users/admin`, {
+      const response = await axios.post(`https://api.interviewwace.com/api/users/admin`, {
         email,
         password
       });
-
+         console.log('Login response:', response.data);
       if (response.data.success) {
         localStorage.setItem('adminToken', response.data.token);
         localStorage.setItem('adminEmail', email);
