@@ -14,6 +14,8 @@ import LiveInterview from './pages/LiveInterview'
 import InterviewPage from './pages/interviewPage'
 import Dashboard from './pages/dashboard'
 import {Toaster} from 'react-hot-toast'
+import HowToPassInterviewQuestions from './pages/howToPassInterviewQuestions'
+import InterviewQuestionsKenya from './pages/interviewQestionsKenya'
 export const backendUrl = import.meta.env.VITE_BACKEND_URL
 function App() {
   
@@ -29,9 +31,11 @@ function App() {
       <Route path='/product' element={<Product />} />
       <Route path='/demo' element={<Demo />} />
       <Route path='/demoDone' element={<DemoDone />} />
-      <Route path='LiveInterview' element={<LiveInterview/>} />
+      <Route path='/LiveInterview' element={<LiveInterview/>} />
       <Route path='/interviewPage' element={<InterviewPage/>} />
       <Route path='/dashboard' element={<Dashboard/>} />
+      <Route path='/howToPassInterviewQuestions' element={<HowToPassInterviewQuestions />} />
+      <Route path='/interviewQuestionsKenya' element={<InterviewQuestionsKenya />} />
     </Routes>
    
     </>
