@@ -448,7 +448,7 @@ export const initializePaystack = async (req, res) => {
                 email,
                 amount: amount,
                 currency: 'KES',
-                callback_url: `${forntendUrl}/interviewPage`,
+                callback_url: `${forntendUrl}/interviewPage?paymentId=${payment._id}`,
                 metadata:{
                     clerkId,
                     plan
@@ -463,7 +463,7 @@ export const initializePaystack = async (req, res) => {
         );
         payment.paystackReference = response.data.data.reference
         await payment.save()
-        return res.json({ authorizationUrl: response.data.data.authorization_url });
+        return res.json({ authorizationUrl: response.data.data.authorization_url, paymentId: payment._id });
     } catch (error) {
         console.error('Paystack error:', error.response?.data || error.message);
         return res.status(400).json({ error: error.response?.data?.message || error.message });
@@ -561,4 +561,19 @@ const event = JSON.parse(rawBody);
 
     // Return 200 for other events we don't handle
     res.json({ status: "received" });
+};
+
+// Get payment by Paystack reference
+export const getPaymentByReference = async (req, res) => {
+    const { reference } = req.params;
+    try {
+        const payment = await InterviewPayment.findOne({ paystackReference: reference });
+        if (!payment) {
+            return res.status(404).json({ error: 'Payment not found' });
+        }
+        return res.json({ paymentId: payment._id, status: payment.status });
+    } catch (error) {
+        console.error('Error fetching payment by reference:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
 };

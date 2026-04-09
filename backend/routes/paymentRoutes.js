@@ -9,7 +9,7 @@ import {
     getPaymentStatus,
     initializePaystack,
     paystackWebhook,
-   
+    getPaymentByReference
 } from '../controller/paymentController.js';
 
 const router = express.Router();
@@ -41,5 +41,8 @@ router.post('/manual-confirm', manualConfirmPayment);
 
 // Get payment status by paymentId
 router.get('/status/:paymentId', getPaymentStatus);
+
+// Get payment by Paystack reference
+router.get('/by-reference/:reference', getPaymentByReference);
 
 export default router;

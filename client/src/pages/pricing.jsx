@@ -194,6 +194,10 @@ const submitPhone = async (e) => {
          console.log(res)
          const data = await res.json();
          if (data.authorizationUrl) {
+             // Store paymentId for later use
+             if (data.paymentId) {
+                 sessionStorage.setItem('paymentId', data.paymentId);
+             }
              window.location.href = data.authorizationUrl;
          } else {
              toast.error(data.error || data.message || 'Failed to initialize payment');

@@ -12,20 +12,26 @@ const InterviewPage = () => {
     const navigate = useNavigate()
     const { user } = useUser()
     
-    // Get paymentId from navigation state OR sessionStorage (for page reload support)
+    // Get paymentId from navigation state, query param, OR sessionStorage (for page reload support)
     const [paymentId, setPaymentId] = useState(() => {
-        return location.state?.paymentId || sessionStorage.getItem('paymentId')
+        const urlParams = new URLSearchParams(location.search)
+        return location.state?.paymentId || urlParams.get('paymentId') || sessionStorage.getItem('paymentId')
     })
     
     // Ensure paymentId is always available from sessionStorage if available
     useEffect(() => {
         // Check if there's a stored paymentId but the interview is already completed
         const stored = sessionStorage.getItem('paymentId')
-        if (stored) {
+        const urlParams = new URLSearchParams(location.search)
+        const queryPaymentId = urlParams.get('paymentId')
+        if (queryPaymentId) {
+            setPaymentId(queryPaymentId)
+            sessionStorage.setItem('paymentId', queryPaymentId)
+        } else if (stored) {
             // We'll check the status when we fetch the interview
             setPaymentId(stored)
         }
-    }, [])
+    }, [location.search])
     
     const [experienceLevel, setExperienceLevel] = useState('entry-level')
     const [jobRole, setJobRole] = useState('')
