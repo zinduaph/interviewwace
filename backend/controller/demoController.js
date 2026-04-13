@@ -110,11 +110,11 @@ Rules:
   "Tell me about yourself"
   "What are your strengths?"
 
-Question Types:
-1 technical concept question
-2 technical scenario question
-3 behavioral question
-4 behavioral question
+Question Types (use EXACTLY these values for the "type" field):
+1 technical
+2 technical
+3 behavioral
+4 behavioral
 
 Make the questions practical and realistic.
 
@@ -122,9 +122,9 @@ Return ONLY valid JSON:
 
 [
  {"question": "question 1", "type": "technical"},
- {"question": "question 2", "type": "behavioral"},
+ {"question": "question 2", "type": "technical"},
  {"question": "question 3", "type": "behavioral"},
- {"question": "question 4", "type": "technical"}
+ {"question": "question 4", "type": "behavioral"}
 ]
 `;
 

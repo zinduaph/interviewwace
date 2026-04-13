@@ -46,7 +46,7 @@ const InterviewPage = () => {
     const [pasteWarning, setPasteWaring] = useState(false)
 
     // Timer state - 90 seconds
-        const [timeLeft, setTimeLeft] = useState(120);
+        const [timeLeft, setTimeLeft] = useState(180);
         const [isTimerActive, setIsTimerActive] = useState(false);
         const [timeWarning, setTimeWarning] = useState(false);
         const timerRef = useRef(null);
