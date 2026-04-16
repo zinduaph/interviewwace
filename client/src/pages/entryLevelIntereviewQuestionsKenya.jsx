@@ -4,9 +4,9 @@ const EntryLevelQuestions = () => {
     return (
         <>
         <div className="p-4">
-            <h1 className="text-4xl text-[#EFBF04] mt-3  mb-2 font-semibold">Entry Level Interview Questions in Kenya</h1>
+            <h1 className="text-2xl md:text-4xl text-[#EFBF04] mt-3  mb-2 font-semibold">Entry Level Interview Questions in Kenya</h1>
              <div>
-                <p className="text-2xl mt-6 font-semibold">Preparing for an entry-level interview in Kenya can be a daunting task, but with the right preparation,
+                <p className="text-sm md:text-2xl mt-4 font-semibold">Preparing for an entry-level interview in Kenya can be a daunting task, but with the right preparation,
                      you can increase your chances of success. Here are some common entry-level interview questions you may encounter and tips on how to answer them effectively.</p>
              </div>
 
