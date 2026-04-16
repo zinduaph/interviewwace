@@ -44,7 +44,7 @@ const InterviewQuestionsKenya = () => {
             </div>
 
             <div className="">
-                <a href="http://interviewwace.com" target="_blank" rel="noopener noreferrer">
+                <a href="http://interviewwace.com" target="_blank" rel="nofollow noopener noreferrer">
                     <button className="bg-[#EFBF04] text-black font-bold py-2 px-4 rounded hover:bg-[#d4a700]">
                         Learn more
                     </button>

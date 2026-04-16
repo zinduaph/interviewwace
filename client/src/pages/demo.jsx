@@ -34,12 +34,7 @@ const Demo = () => {
    
 
     // this for analzing the user behavior on demo page
-    useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://t.contentsquare.net/uxa/33f8d4a0c3ed3.js';
-    script.async = true;
-    document.head.appendChild(script);
-}, []);
+   
 
     // Check if user can do free demo on mount
     useEffect(() => {

@@ -16,6 +16,11 @@ import Dashboard from './pages/dashboard'
 import {Toaster} from 'react-hot-toast'
 import HowToPassInterviewQuestions from './pages/howToPassInterviewQuestions'
 import InterviewQuestionsKenya from './pages/interviewQestionsKenya'
+import InterviewPracticeTool from './pages/aiInterviewPracticeTool'
+import EntryLevelQuestions from './pages/entryLevelIntereviewQuestionsKenya'
+import HowToAnswerWhyShouldWeHireYou from './pages/howToAnswerWhyShouldWeHireYou'
+import BeginnerTips from './pages/jobInterviewTipsForBeginners'
+import PracticeInterview from './pages/practiceInterviewOnlineFree'
 export const backendUrl = import.meta.env.VITE_BACKEND_URL
 function App() {
   
@@ -36,6 +41,11 @@ function App() {
       <Route path='/dashboard' element={<Dashboard/>} />
       <Route path='/howToPassInterviewQuestions' element={<HowToPassInterviewQuestions />} />
       <Route path='/interviewQuestionsKenya' element={<InterviewQuestionsKenya />} />
+      <Route path='/aiInterviewPracticeTool' element={<InterviewPracticeTool />} />
+      <Route path='/entryLevelInterviewQuestionsKenya' element={<EntryLevelQuestions />} />
+      <Route path='/howToAnswerWhyShouldWeHireYou' element={<HowToAnswerWhyShouldWeHireYou/>} />
+      <Route path='/jobInterviewTipsForBeginners' element={<BeginnerTips/>} />
+      <Route path='/practiceInterviewOnlineFree' element={<PracticeInterview/>} />
     </Routes>
    
     </>
