@@ -131,7 +131,7 @@ const Product = () => {
                         <a 
                             href="https://tariji.co.ke" 
                             target="_blank" 
-                            rel="noopener noreferrer"
+                            rel="nofollow noopener noreferrer"
                             className="inline-flex items-center gap-2 bg-[#EFBF04] text-black font-semibold py-3 px-8 rounded-full hover:bg-[#d4a700] transition-colors duration-300"
                         >
                             Visit Tariji
