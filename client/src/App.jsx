@@ -21,6 +21,10 @@ import EntryLevelQuestions from './pages/entryLevelIntereviewQuestionsKenya'
 import HowToAnswerWhyShouldWeHireYou from './pages/howToAnswerWhyShouldWeHireYou'
 import BeginnerTips from './pages/jobInterviewTipsForBeginners'
 import PracticeInterview from './pages/practiceInterviewOnlineFree'
+import FreshGraduate from "./pages/interviewQuestionsFreshGraduate";
+import StrengthInterview from "./pages/strengthAndWeaknessesInterview"
+import InterviewMistakes from "./pages/interviewMistakes"
+import InterviewGuide from "./pages/completeInterviewGuide"
 export const backendUrl = import.meta.env.VITE_BACKEND_URL
 function App() {
   
@@ -46,6 +50,10 @@ function App() {
       <Route path='/howToAnswerWhyShouldWeHireYou' element={<HowToAnswerWhyShouldWeHireYou/>} />
       <Route path='/jobInterviewTipsForBeginners' element={<BeginnerTips/>} />
       <Route path='/practiceInterviewOnlineFree' element={<PracticeInterview/>} />
+      <Route path='/interviewQuestionsFreshGraduate' element={<FreshGraduate/>} />
+      <Route path='/strengthAndWeaknessesInterview' element={<StrengthInterview/>} />
+      <Route path="/interviewMistakes"  element={<InterviewMistakes/>} />
+      <Route path="/completeInterviewGuide" element={<InterviewGuide/>} />
     </Routes>
    
     </>

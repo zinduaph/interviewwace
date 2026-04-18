@@ -13,5 +13,8 @@
   <url>
     <loc>https://interviewwace.com/product</loc>
   </url>
-
+        
+        <url>
+    <loc>https://interviewwace.com/completeInterviewGuide</loc>
+  </url>
 </urlset>

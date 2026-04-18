@@ -14,9 +14,9 @@ const Preview = () => {
         </div>
         
         <div className=" m-auto flex  justify-center mt-4">
-         <Link to='/stories'>
+         <Link to='/completeInterviewGuide'>
          <button className="bg-[#EFBF04] shadow-lg shadow-[#EFBF04]/80 w-40 md:w-70 text-black text-center font-bold py-2 px-4 rounded hover:bg-[#d4a700] glow-button">
-            stories
+            Interview guide
         </button>
          </Link>
 
