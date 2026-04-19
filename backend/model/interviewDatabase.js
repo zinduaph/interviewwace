@@ -78,12 +78,12 @@ const paidInterviewSchema = new mongoose.Schema({
     paymentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'InterviewPayment',
-        required: true
+        
     },
     // Plan type: basic, standard, premium
     plan: {
         type: String,
-        enum: ['basic', 'standard', 'premium'],
+        enum: ['count down interview', 'chat interview', 'mock interview'],
         required: true
     },
     // Interview mode: static (all questions upfront) or chat (interactive)
@@ -280,9 +280,9 @@ paidInterviewSchema.statics.findUserInterviews = async function(clerkId, limit =
 };
 
 // Static method to find active interview for payment
-paidInterviewSchema.statics.findActiveInterview = async function(paymentId) {
+paidInterviewSchema.statics.findActiveInterview = async function(clerkId) {
     return await this.findOne({
-        paymentId,
+        clerkId,
         status: { $in: ['in-progress', 'in-progress-chat', 'submitted'] }
     });
 };

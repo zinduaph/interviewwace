@@ -32,16 +32,12 @@ const submitPhone = async (e) => {
     
     try {
         const planMap = {
-            'Basic':'basic',
-            'standard': 'standard',
-            'premium': 'premium'
+            'count down interview':'count down interview',
+            'chat interview': 'chat interview',
+            'mock interview': 'mock interview'
         }
-        const planName = planMap[selectedPlan?.name] || 'basic'
-        const response = await axios.post(`${backendUrl}/api/payment/initiate`,{
-            clerkId:user.id,
-            phoneNumber:phone,
-            plan:planName
-        })
+        const planName = planMap[selectedPlan?.name] || 'count down interview'
+       
 
         if (response.data.success){
             toast.success('check your phone for m-pesa prompt')
@@ -109,29 +105,45 @@ const submitPhone = async (e) => {
      // give the user some time to enter the pins
      setTimeout(checkStatus,5000)
    }
+
+   const freeInterview = () => {
+    if(!user){
+        toast.error('please sign in first')
+        return;
+    }
+    const planMap = {
+            'count down interview':'count down interview',
+            'chat interview': 'chat interview',
+            'mock interview': 'mock interview'
+        }
+    const planName = planMap[selectedPlan?.name] || 'count down interview' 
+    navigate('/interviewPage', {
+        state: {plan: planName}
+    })
+   }
     const pricingPlans = [
         {
-            name: 'Basic',
-            price: 'ksh25',
+            name: 'count down interview',
+            price: 'Benefites',
             features: [
-                '2 interview session',
-                'specific questions for the role you are applying for',
-                'feedback on your answers',
+                "1.Help you to know to answer questions under pressure",
+                "2. Help's you to improve your time management skills during interviews",
+                "3. Boost your confidence and reduce anxiety by simulating real interview conditions",
+
 
             ],
             
         }, {
-            name: 'standard',
-            price: 'ksh30',
+            name: 'chat interview',
+            price: 'Benefites',
             features: [
-                '3 mock interview sessions with our advanced AI interviewer',
-                'specific qusestion for the role you are applying for',
-                'detailed feedback on your performance',
-                'tips and resources to improve your interview skills'
-
+                "1. Emulate real interview scenarios to help you practice and improve your interview skills.",
+                "2. Provide instant feedback on your responses, helping you identify areas for improvement and build confidence.",
+                 "3. chat interview emulates a recruiter asking you questions in a conversational manner, allowing you to practice your communication skills and adapt to different interview styles.",
+                 "4. chat interview provide a safe and supportive enviroment for you to practice and refine your interview skills "
             ]
         }, {
-            name: 'premium',
+            name: 'mock interview [not available yet]',
             price: 'ksh50',
             features: [
                 ' 6 mock interview sessions with our advanced AI interviewer.',
@@ -140,19 +152,7 @@ const submitPhone = async (e) => {
                 'tips and resources to improve your interview skills.',
                 'priority support and access to exclusive content.'
             ]
-        } ,{
-            name: 'Bulk [not available yet]',
-            price: 'ksh499',
-            features: [
-                "10 mock interview sessions with our advanced AI interviewer.",
-                'specific qusestion for the role you are applying for.',
-                'detailed feedback on your performance.',
-                'tips and resources to improve your interview skills.',
-                'priority support and access to exclusive content.',
-                'Track the progress of multiple users and manage their interview preparation in one place.'
-
-            ]
-        }
+        } 
     ]
     {/** this is the paystack patment function */}
 
@@ -216,7 +216,7 @@ const submitPhone = async (e) => {
         <div className="bg-black min-h-screen">
             <Navbar/>
 
-            <p className="mt-15 text-center text-gray-300 text-3xl md:text-4xl">Our pricing plans are designed to meet your <span className="text-[#EFBF04] font-bold">needs</span> and <span className="text-[#EFBF04] font-bold">budget</span></p>
+            <p className="mt-15 text-center text-gray-300 text-3xl md:text-4xl">Choose the interview scenario that best fits your <span className="text-[#EFBF04] font-bold">needs</span> and <span className="text-[#EFBF04] font-bold">goals</span></p>
                 {paymentStatus && (
                     <div className="mt-4 text-center">
                         <p className={`text-lg font-semibold ${paymentStatus.status === 'success' ? 'text-green-400' : paymentStatus.status === 'error' ? 'text-red-400' : 'text-yellow-400'}`}>
@@ -224,9 +224,9 @@ const submitPhone = async (e) => {
                         </p>
                     </div>
                 )}
-            <div className="grid grid-cols-1 mt-15 md:grid-cols-4 gap-3 p-2 md:gap-4 justify-around">
+            <div className="grid grid-cols-1 mt-15 md:grid-cols-3 gap-3 p-5 md:gap-4 justify-around">
                 {pricingPlans.map((plan, index) => (
-                    <div key={index} className="border border-gray-300 rounded-md w-60 md:w-70 flex flex-col gap-3 p-4">
+                    <div key={index} className="border border-gray-700 bg-gray-800/50 rounded-md w-60 md:w-90 flex flex-col gap-3 p-6 shadow-[#EFBF04]/50 shadow-md">
                         <h3 className="text-3xl text-[#EFBF04]">{plan.name}</h3>
                         <p className="text-white text-2xl font-semibold">{plan.price}</p>
                         <ul className="list-disc list-inside space-y-2">
@@ -235,7 +235,7 @@ const submitPhone = async (e) => {
                             ))}
                         </ul>
                         <button onClick={() => { setSelectedPlan(plan); setPayModel(true); }} className="bg-[#EFBF04] cursor-pointer text-black font-bold py-2 px-4 rounded-md hover:bg-[#d4a700]">
-                            Choose Plan
+                            Get started
                         </button>
                     </div>
                 ))}
@@ -267,18 +267,16 @@ const submitPhone = async (e) => {
                                     <strong className="text-white">what happens next?</strong>
                                 </p>
                                 <ul className="text-gray-400 font-semibold text-sm space-y-1 mb-4">
-                                    <p>1. you will receive a confirmation email on your payment</p>
-                                    <p>2. based on your plan selection, you will be granted access to the selected features and benefits</p>
-                                    <p>3. you can start using our services and enjoy the benefits of your chosen plan</p>
+                                    <li>you will be granted access to the selected features and benefits interview</li>
                                 </ul>
                             </div>
 
                             <div className="flex flex-col gap-2">
-                             <button onClick={handlePaystackPayment} className="p-2 text-white bg-[#FEBF04] rounded-md">
-                                {loading ? ('processing') :( selectedPlan ? `Pay ${selectedPlan.price}` : 'No plan selected') }
+                             <button type="button" onClick={freeInterview} className="p-2 text-white bg-[#FEBF04] hover:cursor-pointer rounded-md">
+                                {loading ? ('processing') :( selectedPlan ? ` ${selectedPlan.name}` : 'No plan selected') }
                              </button>
-                             <button className="bg-gray-800 text-white p-2 rounded-md text-2xl">
-                                cancel
+<button type="button" onClick={() => setPayModel(false)} className="bg-gray-800 text-white p-2 rounded-md text-2xl">
+                                 cancel
                              </button>
                             </div>
                             </form>

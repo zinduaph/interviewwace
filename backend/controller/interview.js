@@ -169,40 +169,49 @@ export const createPaidInterview = async (req, res) => {
     } = req.body;
       
     try {
+        const user = await User.findOne({clerkId});
+
+        if (!user) {
+            return res.json({success:false,message:"please sign in to create an interview"});
+        }
+        
+        const today = new Date();
+        today.setHours(0,0,0,0);
+
+        const lastDate = user.lastInterviewDate ? new Date(user.lastInterviewDate) : null;
+        if(lastDate) {
+            lastDate.setHours(0,0,0,0);
+        }
+
+        // Reset if new day
+        if(!lastDate || lastDate.getTime() !== today.getTime()) {
+            user.interviewsUsed = 0;
+            user.lastInterviewDate = today;
+        }
+          
+        // Check daily limit
+if (user.interviewsUsed >= 3) {
+    return res.status(400).json({ 
+        error: "Daily limit reached. You can do 3 interviews per day. Try again tomorrow." 
+    });
+}
+
         // Validate required fields
         if (!jobRole) {
             return res.status(400).json({ message: "Job role is required" });
         }
         
-        if (!paymentId) {
-            return res.status(400).json({ message: "Payment ID is required for paid interviews" });
-        }
-
-        // Verify payment
-        const payment = await InterviewPayment.findById(paystackTransactionId);
-        if (!payment) {
-            return res.status(404).json({ error: "Payment not found" });
-        }
         
-        if (payment.status !== 'completed') {
-            return res.status(400).json({ error: "Payment not completed", paymentStatus: payment.status });
-        }
         
-        if (payment.interviewsUsed >= payment.interviewsAllowed) {
-            return res.status(400).json({ error: "No interviews remaining on this payment" });
-        }
-
-        // This is to check how many inteviews the user has used
-        const user = await User.findOne({ clerkId });
-        if (user) {
-         user.interviewsUsed += 1;
-           await user.save();
-               }
-
+        await user.save();
+        
+        
+        
+        
 
         // Validate plan type
-        const validPlans = ['basic', 'standard', 'premium'];
-        const selectedPlan = payment.plan
+        const validPlans = ['count down interview', 'chat interview', 'mock interview'];
+        const selectedPlan = plan?.toLowerCase() || 'count down interview';
         
         if (!validPlans.includes(selectedPlan)) {
             return res.status(400).json({ error: "Invalid plan type" });
@@ -211,7 +220,7 @@ export const createPaidInterview = async (req, res) => {
        
 
         // Check for existing active interview
-        const existingInterview = await PaidInterview.findActiveInterview(paymentId);
+        const existingInterview = await PaidInterview.findActiveInterview(clerkId);
         if (existingInterview) {
             return res.json({
                 success: true,
@@ -229,7 +238,7 @@ export const createPaidInterview = async (req, res) => {
         }
 
         // Determine interview mode based on plan
-        const interviewMode = selectedPlan === 'basic' ? 'static' : 'chat';
+        const interviewMode = selectedPlan === "count down interview" ? 'static' : 'chat';
         
         let questions = [];
         let chatMessages = [];
@@ -256,7 +265,6 @@ export const createPaidInterview = async (req, res) => {
         // Create paid interview
         const paidInterview = new PaidInterview({
             clerkId: clerkId || null,
-            paymentId,
             plan: selectedPlan,
             interviewMode,
             jobRole,
@@ -274,9 +282,7 @@ export const createPaidInterview = async (req, res) => {
 
         await paidInterview.save();
 
-        // Use one interview credit
-        payment.interviewsUsed += 1;
-        await payment.save();
+        
 
         return res.json({
             success: true,

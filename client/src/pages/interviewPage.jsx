@@ -12,6 +12,8 @@ const InterviewPage = () => {
     const navigate = useNavigate()
     const { user } = useUser()
     
+    const plan = location.state?.plan
+    
     // Get paymentId from navigation state, query param, OR sessionStorage (for page reload support)
     const [paymentId, setPaymentId] = useState(() => {
         const urlParams = new URLSearchParams(location.search)
@@ -19,19 +21,7 @@ const InterviewPage = () => {
     })
     
     // Ensure paymentId is always available from sessionStorage if available
-    useEffect(() => {
-        // Check if there's a stored paymentId but the interview is already completed
-        const stored = sessionStorage.getItem('paymentId')
-        const urlParams = new URLSearchParams(location.search)
-        const queryPaymentId = urlParams.get('paymentId')
-        if (queryPaymentId) {
-            setPaymentId(queryPaymentId)
-            sessionStorage.setItem('paymentId', queryPaymentId)
-        } else if (stored) {
-            // We'll check the status when we fetch the interview
-            setPaymentId(stored)
-        }
-    }, [location.search])
+   
     
     const [experienceLevel, setExperienceLevel] = useState('entry-level')
     const [jobRole, setJobRole] = useState('')
@@ -43,6 +33,7 @@ const InterviewPage = () => {
     const [chatLoading, setChatLoading] = useState(false)
     const [feedback, setFeedback] = useState(null)
     const [interviewMode, setInterviewMode] = useState(null) // 'static' or 'chat'
+    const [chatComplete, setChatComplete] = useState(false)
     const [pasteWarning, setPasteWaring] = useState(false)
 
     // Timer state - 90 seconds
@@ -52,13 +43,7 @@ const InterviewPage = () => {
         const timerRef = useRef(null);
 
     // Redirect if no paymentId (only after initial load)
-    useEffect(() => {
-        // Only redirect if there's no interview and no paymentId
-        const storedPaymentId = sessionStorage.getItem('paymentId')
-        if (!paymentId && !storedPaymentId && !interview) {
-            navigate('/pricing')
-        }
-    }, [paymentId, navigate, interview])
+    
 
     // Fetch existing interview on page load (for page reload support)
     useEffect(() => {
@@ -114,15 +99,15 @@ const InterviewPage = () => {
         setLoading(true)
         try {
             const response = await axios.post(`${backendUrl}/api/interview/paid/create`, {
-                paymentId: paymentId,
                 jobRole: jobRole,
                 experienceLevel: experienceLevel,
-                clerkId: user?.id
+                clerkId: user?.id,
+                plan: plan || 'count down interview'
             })
             
             if (response.data.success) {
                 // Clear any old paymentId and set the new one
-                sessionStorage.setItem('paymentId', paymentId)
+             
                 
                 setInterview(response.data)
                 setInterviewMode(response.data.interviewMode)
@@ -311,6 +296,7 @@ const InterviewPage = () => {
 
     // Get final evaluation for chat interview
     const getFinalEvaluation = async () => {
+        setChatComplete(true)
         try {
             const response = await axios.post(`${backendUrl}/api/interview/paid/end-chat`, {
                 interviewId: interview.interviewId
@@ -337,6 +323,7 @@ const InterviewPage = () => {
         setChatAnswer('')
         setAnswers({})
         setCurrentQuestionIndex(0)
+        setChatComplete(false)
         setIsTimerActive(false)
         setTimeLeft(120)
         setTimeWarning(false)
@@ -445,6 +432,11 @@ const InterviewPage = () => {
     // Render chat interview (Standard/Premium plan)
     const renderChatInterview = () => (
         <div className="max-w-2xl mx-auto mt-8 p-4">
+            {chatComplete && (
+                <div className="mb-4 rounded-xl p-4 bg-[#EFBF04]/10 border border-[#EFBF04] text-[#EFBF04]">
+                    Interview is complete. Retrieving your final feedback now...
+                </div>
+            )}
             <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-4 mb-4 h-96 overflow-y-auto">
                 {interview.chatMessages?.map((msg, index) => (
                     <div key={index} className={`mb-4 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
@@ -463,21 +455,16 @@ const InterviewPage = () => {
             {/* Always show input field - no feedback during interview */}
             <div className="flex gap-2">
                 <textarea
-                onPaste={(e) => {
-                    e.preventDefault()
-                    setPasteWaring(true)
-                    // Hide warning after 3 seconds
-            setTimeout(() => setPasteWaring(false), 3000);
-                } }
                     value={chatAnswer}
                     onChange={(e) => setChatAnswer(e.target.value)}
                     placeholder="Type your answer..."
+                    disabled={chatComplete}
                     className="flex-1 bg-black/50 border border-gray-700 h-30 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:border-[#EFBF04] outline-none resize-none"
                     rows={3}
                 />
                 <button 
                     onClick={submitChatAnswer}
-                    disabled={chatLoading}
+                    disabled={chatLoading || chatComplete}
                     className="bg-[#EFBF04] text-black p-3 rounded-lg hover:bg-[#d4a700] disabled:opacity-50"
                 >
                     <Send className="w-5 h-5" />
@@ -601,10 +588,10 @@ const InterviewPage = () => {
 
             {/* Show interview based on mode */}
             {interview && interviewMode === 'static' && !feedback && renderStaticInterview()}
-            {interview && interviewMode === 'chat' && renderChatInterview()}
+            {interview && interviewMode === 'chat' && !feedback && renderChatInterview()}
             
             {/* Show feedback/results only when interview is truly complete */}
-            {feedback && (feedback.isComplete === false ? null : renderFeedback())}
+            {feedback && renderFeedback()}
         </div>
     )
 }
