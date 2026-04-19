@@ -5,7 +5,7 @@ import './App.css'
 import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
 import About from './pages/about'
-import Pricing from './pages/pricing'
+import Pricing from './pages/interview'
 import Stories from './pages/stories'
 import Product from './pages/product'
 import Demo from './pages/demo'
@@ -35,7 +35,7 @@ function App() {
     <Routes>
       <Route path='/' element={<Home/>} />
       <Route path='/about' element={<About />} />
-      <Route path='/pricing' element={<Pricing />} />
+      <Route path='/interview' element={<Pricing />} />
       <Route path='/stories' element={< Stories />} />
       <Route path='/product' element={<Product />} />
       <Route path='/demo' element={<Demo />} />
