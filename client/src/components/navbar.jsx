@@ -19,7 +19,7 @@ const Navbar = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const navLinks = ['Product', 'Stories', 'Pricing', 'about', 'Dashboard'];
+    const navLinks = ['Product', 'Stories', 'interview', 'about', 'Dashboard'];
     
     return (
         <>
