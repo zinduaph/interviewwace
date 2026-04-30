@@ -208,7 +208,7 @@ const Job = () => {
 
             {/* CTA Button */}
             <div className="text-center">
-              <a href="/" className="inline-block bg-[#EFBF04] text-black px-8 py-4 rounded-full text-lg font-bold hover:bg-white hover:shadow-[0px_0px_30px_14px] hover:shadow-[#EFBF04]/50 shadow-[0px_0px_30px_7px] shadow-[#EFBF04]/20 transition-all duration-300 transform hover:scale-105">
+              <a href="/" target="_blank" rel="nofollow noopener noreferrer" className="inline-block bg-[#EFBF04] text-black px-8 py-4 rounded-full text-lg font-bold hover:bg-white hover:shadow-[0px_0px_30px_14px] hover:shadow-[#EFBF04]/50 shadow-[0px_0px_30px_7px] shadow-[#EFBF04]/20 transition-all duration-300 transform hover:scale-105">
                 Start practicing interviews now
               </a>
             </div>
