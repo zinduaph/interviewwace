@@ -48,12 +48,12 @@ const Demo = () => {
         try {
             // Use Clerk's user object if signed in
             const userClerkId = isSignedIn && user ? user.id : null;
-            console.log('user:',userClerkId)
+           
             
             if (userClerkId) {
                 setClerkId(userClerkId);
                 
-                const response = await fetch('http://localhost:8000/api/demo/check-free-demo', {
+                const response = await fetch('${backendUrl}/api/demo/check-free-demo', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ clerkId: userClerkId })
@@ -142,7 +142,7 @@ const Demo = () => {
         
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8000/api/demo/generate', {
+            const response = await fetch('${backendUrl}/api/demo/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ jobRole, experienceLevel })
