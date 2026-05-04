@@ -26,6 +26,7 @@ import StrengthInterview from "./pages/strengthAndWeaknessesInterview"
 import InterviewMistakes from "./pages/interviewMistakes"
 import InterviewGuide from "./pages/completeInterviewGuide"
 import Job from './blog/how-to-pass-job-interview-kenya-2026'
+import SafaricomInterview from './blog/safaricom-interview-questions-kenya'
 export const backendUrl = import.meta.env.VITE_BACKEND_URL
 function App() {
   
@@ -56,6 +57,7 @@ function App() {
       <Route path="/interviewMistakes"  element={<InterviewMistakes/>} />
       <Route path="/completeInterviewGuide" element={<InterviewGuide/>} />
       <Route path='/how-to-pass-job-interview-kenya-2026' element={<Job/>} />
+      <Route path='/safaricom-interview-questions-kenya' element={<SafaricomInterview/>} />
     </Routes>
    
     </>
