@@ -320,4 +320,3 @@ const HowToLandAJobInKenya = () => {
     )
 }
 export default HowToLandAJobInKenya;
-export default HowToLandAJobInKenya;
