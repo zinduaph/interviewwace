@@ -27,7 +27,7 @@ import InterviewMistakes from "./pages/interviewMistakes"
 import InterviewGuide from "./pages/completeInterviewGuide"
 import Job from './blog/how-to-pass-job-interview-kenya-2026'
 import SafaricomInterview from './blog/safaricom-interview-questions-kenya'
-import HowToLandAJobInKenya from './blog/how-to-land-a-job-in-kenya'
+import HowToLandAJobInKenya from './blog/howToLand-a-Job-in-Kenya'
 export const backendUrl = import.meta.env.VITE_BACKEND_URL
 function App() {
   
