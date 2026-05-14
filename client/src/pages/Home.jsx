@@ -1,4 +1,5 @@
 import Content from "../components/content";
+import Feature from "../components/featuer";
 import Footer from "../components/footer";
 import Hero from "../components/hero";
 import Navbar from "../components/navbar";
@@ -14,6 +15,7 @@ const Home = () => {
         <div className="bg-black min-h-screen">
             <Navbar />
             <Hero />
+            <Feature />
             <Content />
             <Preview />
             <Footer />
