@@ -20,7 +20,7 @@ const Content = () => {
     ];
 
     return (
-        <div className="mt-10 px-4">
+        <div className="mt-30 px-4">
             <div className="text-center flex flex-col gap-2">
                 <span className="text-[#EFBF04] text-2xl font-bold">How it works</span>
                 <h1 className="text-3xl font-semibold md:text-6xl text-white">
