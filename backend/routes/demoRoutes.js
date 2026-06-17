@@ -1,5 +1,5 @@
 import express from 'express';
-import {  generateQuestions, submitAllAnswers,  completeInterview, getInterview,getUserInterviews, checkFreeDemo, incrementDemo } from '../controller/demoController.js';
+import {  generateQuestions, submitAllAnswers,  completeInterview, getInterview,getUserInterviews, checkFreeDemo, incrementDemo, associateInterview } from '../controller/demoController.js';
 
 const router = express.Router();
 
@@ -23,5 +23,8 @@ router.get('/:id', getInterview);
 
 // Get all interviews for a user
 router.get('/user/:clerkId', getUserInterviews);
+
+// Associate interview with user (sign-in after demo)
+router.post('/associate', associateInterview);
 
 export default router;

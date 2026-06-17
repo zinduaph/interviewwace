@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
-import { Sparkles, Briefcase, TrendingUp, ArrowRight, Loader2, Trophy, Clock, AlertTriangle, Lock } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Sparkles, Briefcase, TrendingUp, ArrowRight, Loader2, Trophy, AlertTriangle, Lock } from 'lucide-react';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '@clerk/react';
+import { useUser, SignInButton } from '@clerk/react';
 import toast from 'react-hot-toast';
-import axios from 'axios';
 import { backendUrl } from '../App';
 
 const Demo = () => {
@@ -25,15 +24,9 @@ const Demo = () => {
     const [completed, setCompleted] = useState(false);
     const [finalResult, setFinalResult] = useState(null);
     const [clerkId, setClerkId] = useState(null);
-    const [demosRemaining,setDemosRemainig] = useState(3)
-    // Timer state - 90 seconds
-    const [timeLeft, setTimeLeft] = useState(180);
-    const [isTimerActive, setIsTimerActive] = useState(false);
-    const [timeWarning, setTimeWarning] = useState(false);
-    const timerRef = useRef(null);
-   
+    const [demosRemaining, setDemosRemainig] = useState(3);
 
-    // this for analzing the user behavior on demo page
+    // this is for analyzing the user behavior on demo page
    
 
     // Check if user can do free demo on mount
@@ -41,7 +34,51 @@ const Demo = () => {
         // Wait for Clerk to load
         if (!isLoaded) return;
         checkFreeDemoEligibility();
-    }, [isLoaded, isSignedIn]);
+
+        // Check for pending demo results on initial load (if signed in)
+        if (isSignedIn && user?.id) {
+            (async () => {
+                try {
+                    const pendingInterviewId = localStorage.getItem('lastInterviewId') && localStorage.getItem('demoCompleted');
+                    if (pendingInterviewId && !completed && !finalResult) {
+                        const res = await fetch(`${backendUrl}/api/demo/${localStorage.getItem('lastInterviewId')}`);
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (data?.status === 'completed') {
+                                // Associate with user account
+                                await fetch(`${backendUrl}/api/demo/associate`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ interviewId: data._id, clerkId: user.id })
+                                });
+                                setClerkId(user.id);
+                                checkFreeDemoEligibility();
+
+                                const totalScore = data.totalScore || (data.questions || []).reduce((s, q) => s + (q.score || 0), 0);
+                                const maxScore = (data.questions?.length || 2) * 10;
+                                const percentage = Math.round((totalScore / maxScore) * 100) || 0;
+
+                                setInterviewId(data._id);
+                                setQuestions(data.questions || []);
+                                setCompleted(true);
+                                setFinalResult({
+                                    totalScore,
+                                    maxScore,
+                                    percentage,
+                                    jobRole: data.jobRole,
+                                    experienceLevel: data.experienceLevel,
+                                    questions: data.questions || [],
+                                    completedAt: data.completedAt
+                                });
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.error('Failed to recover pending interview:', err);
+                }
+            })();
+        }
+    }, [isLoaded, isSignedIn, user?.id, completed, finalResult]);
 
     const checkFreeDemoEligibility = async () => {
         setCheckingDemo(true);
@@ -53,7 +90,7 @@ const Demo = () => {
             if (userClerkId) {
                 setClerkId(userClerkId);
                 
-                const response = await fetch('${backendUrl}/api/demo/check-free-demo', {
+                const response = await fetch(`${backendUrl}/api/demo/check-free-demo`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ clerkId: userClerkId })
@@ -77,63 +114,15 @@ const Demo = () => {
         setCheckingDemo(false);
     };
 
-    // Start timer when question changes
-    useEffect(() => {
-        if (questions && isTimerActive) {
-            setTimeLeft(120);
-            setTimeWarning(false);
-            
-            if (timerRef.current) {
-                clearInterval(timerRef.current);
-            }
-            
-            timerRef.current = setInterval(() => {
-                setTimeLeft((prev) => {
-                    if (prev <= 1) {
-                        clearInterval(timerRef.current);
-                        handleTimeUp();
-                        return 0;
-                    }
-                    if (prev <= 10) {
-                        setTimeWarning(true);
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
-        }
-        
-        return () => {
-            if (timerRef.current) {
-                clearInterval(timerRef.current);
-            }
-        };
-    }, [currentQuestion, questions, isTimerActive]);
-
-    // Request fullscreen
-    const requestFullscreen = async () => {
-        try {
-            if (document.documentElement.requestFullscreen) {
-                await document.documentElement.requestFullscreen();
-            }
-        } catch (err) {
-            console.log('Fullscreen not available');
-        }
-    };
-
-    // Exit fullscreen
-    const exitFullscreen = async () => {
-        try {
-            if (document.fullscreenElement) {
-                await document.exitFullscreen();
-            } 
-        } catch (err) {
-            console.log('Exit fullscreen error');
-        }
-    };
-
     const handleStartDemo = async () => {
         if (!jobRole.trim()) return;
         
+        // Reset any old demo state before starting a new run
+        localStorage.removeItem('demoCompleted');
+        localStorage.removeItem('lastInterviewId');
+        setFinalResult(null);
+        setCompleted(false);
+
         // Check if user can do demo
         if (!canDoFreeDemo && !showPricingModal) {
             setShowPricingModal(true);
@@ -142,45 +131,27 @@ const Demo = () => {
         
         setLoading(true);
         try {
-            const response = await fetch('${backendUrl}/api/demo/generate', {
+            const response = await fetch(`${backendUrl}/api/demo/generate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ jobRole, experienceLevel })
+                body: JSON.stringify({ jobRole, experienceLevel, questionCount: 2 })
             });
             const data = await response.json();
             
             if (data.success) {
                 setInterviewId(data.interviewId);
                 localStorage.setItem('lastInterviewId', data.interviewId);
-                setQuestions(data.questions);
+                setQuestions(data.questions?.slice(0, 2) || []);
                 setCurrentQuestion(0);
                 setAnswers({});
-                setIsTimerActive(true);
-                // Request fullscreen
-                requestFullscreen();
             } else {
-                toast.error('failed to genarate questions');
+                toast.error('failed to generate questions');
             }
         } catch (error) {
             console.error('Error:', error);
-            toast.error('failed to start inteview')
+            toast.error('failed to start interview');
         }
         setLoading(false);
-    };
-
-    const handleTimeUp = () => {
-        // Move to next question or finish
-        if (currentQuestion < questions.length - 1) {
-            if (!answers[currentQuestion]?.trim()) {
-                setAnswers({ ...answers, [currentQuestion]: '' });
-            }
-            setCurrentQuestion(currentQuestion + 1);
-        } else {
-            if (!answers[currentQuestion]?.trim()) {
-                setAnswers({ ...answers, [currentQuestion]: '' });
-            }
-            handleFinishInterview();
-        }
     };
 
     const handleAnswer = (answer) => {
@@ -201,8 +172,7 @@ const Demo = () => {
 
     const handleFinishInterview = async () => {
         setSubmitting(true);
-        setIsTimerActive(false);
-        
+
         try {
             const response = await fetch(`${backendUrl}/api/demo/save-answers`, {
                 method: 'POST',
@@ -210,31 +180,30 @@ const Demo = () => {
                 body: JSON.stringify({ 
                     interviewId, 
                     answers: questions.map((_, i) => answers[i] || ''),
-                    clerkId: clerkId
+                    clerkId: clerkId || (isSignedIn && user?.id)
                 })
-                
             });
-            // After successful submission, increment demo count
-             if (clerkId) {
-    try {
-        await fetch(`${backendUrl}/api/demo/increment`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ clerkId })
-        });
-    } catch (err) {
-        console.error('Error incrementing demo:', err);
-    }
-              }
+
+            const effectiveClerkId = clerkId || (isSignedIn && user?.id);
+            if (effectiveClerkId) {
+                try {
+                    await fetch(`${backendUrl}/api/demo/increment`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ clerkId: effectiveClerkId })
+                    });
+                } catch (err) {
+                    console.error('Error incrementing demo:', err);
+                }
+            }
+
             const data = await response.json();
 
             if (data.success) {
-                // Calculate total score
                 const totalScore = data.feedbackResults.reduce((sum, r) => sum + (r.score || 0), 0);
                 const maxScore = questions.length * 10;
                 const percentage = Math.round((totalScore / maxScore) * 100);
 
-                // Update questions with feedback
                 const updatedQuestions = questions.map((q, i) => ({
                     ...q,
                     answer: answers[i] || '',
@@ -251,14 +220,16 @@ const Demo = () => {
                     questions: updatedQuestions,
                     completedAt: new Date()
                 });
-                
-                exitFullscreen();
                 setCompleted(true);
+                
+                // Store flag for sign-in recovery
+                localStorage.setItem('demoCompleted', 'true');
             }
         } catch (error) {
             console.error('Error:', error);
             alert('Failed to submit answers');
         }
+
         setSubmitting(false);
     };
 
@@ -266,9 +237,7 @@ const Demo = () => {
         navigate('/pricing');
     };
 
-    const restartInterview = async () => {
-        await exitFullscreen();
-        
+    const restartInterview = () => {
         setJobRole('');
         setInterviewId(null);
         setQuestions(null);
@@ -276,21 +245,62 @@ const Demo = () => {
         setAnswers({});
         setCompleted(false);
         setFinalResult(null);
-        setIsTimerActive(false);
-        setTimeLeft(90);
+        localStorage.removeItem('demoCompleted');
+        localStorage.removeItem('lastInterviewId');
+        
+        // Reset the sign-in recovery flow too
+        setClerkId(null);
+        setCanDoFreeDemo(true);
+        setShowPricingModal(false);
         
         // Check again if they can do free demo
         checkFreeDemoEligibility();
     };
-    const checkDemoCount = async () => {
-        const response = await axios.post(backendUrl +'/api/demo/check-free-demo', {
-            headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify({ clerkId: user?.id })
-        });
-        if (response.data.success) {
 
-        }
-    }
+    // If the user signs in after completing the demo while signed-out,
+    // fetch the saved interview so we can immediately show detailed results.
+    useEffect(() => {
+        if (!isSignedIn || !interviewId || !completed) return;
+
+        (async () => {
+            try {
+                // Re-associate interview with signed-in user if it was done while signed out
+                if (user?.id && interviewId) {
+                    await fetch(`${backendUrl}/api/demo/associate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ interviewId, clerkId: user.id })
+                    });
+                }
+
+                const res = await fetch(`${backendUrl}/api/demo/${interviewId}`);
+                if (!res.ok) return;
+                const data = await res.json();
+
+                const totalScore = data.totalScore || (data.questions || []).reduce((s, q) => s + (q.score || 0), 0);
+                const maxScore = (data.questions?.length || questions?.length || 2) * 10;
+                const percentage = data.percentage || (maxScore ? Math.round((totalScore / maxScore) * 100) : 0);
+
+                const updatedQuestions = (data.questions || questions || []).map((q) => ({ ...q }));
+
+                setFinalResult({
+                    totalScore,
+                    maxScore,
+                    percentage,
+                    jobRole: data.jobRole || jobRole,
+                    experienceLevel: data.experienceLevel || experienceLevel,
+                    questions: updatedQuestions,
+                    completedAt: data.completedAt || new Date()
+                });
+
+                // If user just signed in, check demo eligibility again
+                setClerkId(user.id);
+                checkFreeDemoEligibility();
+            } catch (err) {
+                console.error('Failed to fetch interview after sign-in:', err);
+            }
+        })();
+    }, [isSignedIn, interviewId, completed, questions, jobRole, experienceLevel]);
 
     // Show results page
     if (completed && finalResult) {
@@ -306,54 +316,62 @@ const Demo = () => {
                                 <p className="text-gray-400">{finalResult.jobRole} - {finalResult.experienceLevel}</p>
                             </div>
 
-                            {/* Score Card */}
-                            <div className="bg-gray-900/50 backdrop-blur-xl border border-gray-800 rounded-2xl p-8 mb-8">
-                                <div className="text-center">
-                                    <div className="text-6xl font-bold text-[#EFBF04] mb-2">
-                                        {finalResult.percentage}%
-                                    </div>
-                                    <div className="text-gray-400 mb-4">
-                                        Score: {finalResult.totalScore} / {finalResult.maxScore}
-                                    </div>
-                                    <div className="text-sm text-gray-500">
-                                        Completed on {new Date(finalResult.completedAt).toLocaleDateString()}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Questions & Answers */}
-                            <div className="space-y-4 mb-8">
-                                <h2 className="text-2xl font-bold text-white mb-4">Your Answers & Feedback</h2>
-                                {finalResult.questions.map((q, index) => (
-                                    <div key={index} className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
-                                        <div className="flex items-start justify-between mb-3">
-                                            <div className="flex items-center gap-2">
-                                                <span className="w-8 h-8 bg-[#EFBF04]/20 rounded-full flex items-center justify-center text-[#EFBF04] font-bold">
-                                                    {index + 1}
-                                                </span>
-                                                <span className={`text-xs font-medium px-2 py-1 rounded-full ${q.type === 'technical' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'}`}>
-                                                    {q.type}
-                                                </span>
+                            {isSignedIn ? (
+                                <>
+                                    <div className="bg-gray-900/50 backdrop-blur-xl border border-gray-800 rounded-2xl p-8 mb-8">
+                                        <div className="text-center">
+                                            <div className="text-6xl font-bold text-[#EFBF04] mb-2">
+                                                {finalResult.percentage}%
                                             </div>
-                                            <span className="text-[#EFBF04] font-bold">{q.score}/10</span>
-                                        </div>
-                                        <p className="text-white font-medium mb-2">{q.question}</p>
-                                        <p className="text-gray-400 text-sm mb-3">Your answer: {q.answer || '(No answer)'}</p>
-                                        <div className="bg-green-900/20 border border-green-800 rounded-lg p-3">
-                                            <p className="text-green-400 text-sm"><span className="font-semibold">Feedback:</span> {q.feedback}</p>
+                                            <div className="text-gray-400 mb-4">
+                                                Score: {finalResult.totalScore} / {finalResult.maxScore}
+                                            </div>
+                                            <div className="text-sm text-gray-500">
+                                                Completed on {new Date(finalResult.completedAt).toLocaleDateString()}
+                                            </div>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
 
-                            <div className="flex gap-4">
-                                <button 
-                                    onClick={canDoFreeDemo ? restartInterview : handleGoToPricing}
-                                    className="flex-1 bg-gradient-to-r from-[#EFBF04] to-yellow-500 text-black font-bold py-4 px-6 rounded-xl hover:from-yellow-400 hover:to-yellow-400 transition-all"
-                                >
-                                    {canDoFreeDemo ? 'Practice Again' : 'Get More Interviews'}
-                                </button>
-                            </div>
+                                    <div className="space-y-4 mb-8">
+                                        <h2 className="text-2xl font-bold text-white mb-4">Your Answers & Feedback</h2>
+                                        {finalResult.questions.map((q, index) => (
+                                            <div key={index} className="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+                                                <div className="flex items-start justify-between mb-3">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="w-8 h-8 bg-[#EFBF04]/20 rounded-full flex items-center justify-center text-[#EFBF04] font-bold">
+                                                            {index + 1}
+                                                        </span>
+                                                        <span className={`text-xs font-medium px-2 py-1 rounded-full ${q.type === 'technical' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'}`}>
+                                                            {q.type}
+                                                        </span>
+                                                    </div>
+                                                    <span className="text-[#EFBF04] font-bold">{q.score}/10</span>
+                                                </div>
+                                                <p className="text-white font-medium mb-2">{q.question}</p>
+                                                <p className="text-gray-400 text-sm mb-3">Your answer: {q.answer || '(No answer)'}</p>
+                                                <div className="bg-green-900/20 border border-green-800 rounded-lg p-3">
+                                                    <p className="text-green-400 text-sm"><span className="font-semibold">Feedback:</span> {q.feedback}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="flex gap-4">
+                                        <button onClick={restartInterview} className="border border-slate-600 hover:bg-slate-800 px-4 py-2 rounded-full text-[#EFBF04] text-sm font-medium transition cursor-pointer">
+                                            Try another demo
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="bg-gray-900/50 backdrop-blur-xl border border-gray-800 rounded-2xl p-8 mb-8 text-center">
+                                    <p className="text-gray-300 mb-6">You completed the demo! Sign up for free to unlock your score and detailed feedback.</p>
+                                    <SignInButton mode="modal">
+                                        <button className="border border-slate-600 hover:bg-slate-800 px-4 py-2 rounded-full text-[#EFBF04] text-sm font-medium transition cursor-pointer">
+                                            Sign In to View Feedback
+                                        </button>
+                                    </SignInButton>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <Footer />
@@ -467,16 +485,16 @@ const Demo = () => {
                                             <div className="flex items-start gap-3">
                                                 <AlertTriangle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
                                                 <div>
-                                                    <p className="text-yellow-400 font-medium text-sm">Fullscreen Mode</p>
+                                                    <p className="text-yellow-400 font-medium text-sm">Quick Demo</p>
                                                     <p className="text-yellow-300/70 text-xs mt-1">
-                                                        Interview will go fullscreen. 90 seconds per question. Feedback shown at the end.
+                                                        Practice with just two interview questions in this demo.
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <p className="text-gray-500 text-sm">
-                                            We'll generate 4 personalized questions based on your role.
+                                            We'll generate 2 personalized questions based on your role.
                                         </p>
 
                                         <button 
@@ -512,8 +530,8 @@ const Demo = () => {
                                     <div className="w-12 h-12 bg-[#EFBF04]/10 rounded-xl flex items-center justify-center mx-auto mb-3">
                                         <span className="text-2xl">⚡</span>
                                     </div>
-                                    <h3 className="text-white font-semibold">90 Seconds</h3>
-                                    <p className="text-gray-500 text-sm">Per question</p>
+                                    <h3 className="text-white font-semibold">Fast Practice</h3>
+                                    <p className="text-gray-500 text-sm">Only 2 questions</p>
                                 </div>
                         <div className="text-center p-4">
                        <div className="w-12 h-12 bg-[#EFBF04]/10 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -532,18 +550,8 @@ const Demo = () => {
                 {questions && (
                     <div className="px-4 pb-20">
                         <div className="max-w-2xl mx-auto">
-                            {/* Timer */}
-                            <div className={`mb-6 rounded-xl p-4 flex items-center justify-between ${timeWarning ? 'bg-red-900/30 border border-red-800' : 'bg-gray-900/50 border border-gray-800'}`}>
-                                <div className="flex items-center gap-3">
-                                    <Clock className={`w-6 h-6 ${timeWarning ? 'text-red-400' : 'text-[#EFBF04]'}`} />
-                                    <div>
-                                        <p className="text-gray-400 text-sm">Time Remaining</p>
-                                        <p className={`text-2xl font-bold ${timeWarning ? 'text-red-400' : 'text-white'}`}>
-                                            {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
+                                        <div className="mb-6 rounded-xl p-4 bg-gray-900/50 border border-gray-800">
+                                <div className="flex items-center justify-between">
                                     <p className="text-gray-400 text-sm">Question {currentQuestion + 1} of {questions.length}</p>
                                     <p className="text-[#EFBF04] font-medium">{questions[currentQuestion]?.type}</p>
                                 </div>
@@ -576,7 +584,7 @@ const Demo = () => {
                                 <textarea
                                     value={answers[currentQuestion] || ''}
                                     onChange={(e) => handleAnswer(e.target.value)}
-                                    placeholder="Type your answer here... (90 seconds)"
+                                    placeholder="Type your answer here..."
                                     rows={5}
                                     className="w-full bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-[#EFBF04] focus:ring-1 focus:ring-[#EFBF04] outline-none transition-all resize-none"
                                 ></textarea>

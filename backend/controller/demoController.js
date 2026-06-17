@@ -84,7 +84,8 @@ export const checkFreeDemo = async (req, res) => {
 
 // Generate 6 interview questions based on job role
 export const generateQuestions = async (req, res) => {
-    const { jobRole, experienceLevel, clerkId } = req.body;
+    const { jobRole, experienceLevel, clerkId, questionCount = 2 } = req.body;
+    const count = Math.max(2, Math.min(Number(questionCount) || 2, 6));
 
     try {
         if (!jobRole) {
@@ -95,6 +96,20 @@ export const generateQuestions = async (req, res) => {
         // this for checking the API usage
         checkAndIncrementUsage
 
+        let typeInstruction = '';
+        if (count === 2) {
+            typeInstruction = '1 technical\n2 behavioral';
+        } else if (count === 3) {
+            typeInstruction = '1 technical\n2 technical\n3 behavioral';
+        } else if (count === 4) {
+            typeInstruction = '1 technical\n2 technical\n3 behavioral\n4 behavioral';
+        } else {
+            typeInstruction = Array.from({ length: count }, (_, idx) => {
+                const type = idx < Math.ceil(count / 2) ? 'technical' : 'behavioral';
+                return `${idx + 1} ${type}`;
+            }).join('\n');
+        }
+
        const prompt = `
        Seed: ${randomSeed}
 You are an expert interviewer creating UNIQUE interview questions.
@@ -103,7 +118,7 @@ Job Role: ${jobRole}
 Experience Level: ${experienceLevel || "entry-level"}
 
 Rules:
-- Generate EXACTLY 4 questions.
+- Generate EXACTLY ${count} questions.
 - Questions must be SPECIFIC to the role.
 - Avoid generic questions like:
   "What is ${jobRole}?"
@@ -111,20 +126,14 @@ Rules:
   "What are your strengths?"
 
 Question Types (use EXACTLY these values for the "type" field):
-1 technical
-2 technical
-3 behavioral
-4 behavioral
+${typeInstruction}
 
 Make the questions practical and realistic.
 
-Return ONLY valid JSON:
+Return ONLY valid JSON array with ${count} objects:
 
 [
- {"question": "question 1", "type": "technical"},
- {"question": "question 2", "type": "technical"},
- {"question": "question 3", "type": "behavioral"},
- {"question": "question 4", "type": "behavioral"}
+ ${Array.from({ length: count }, (_, i) => `{"question": "question ${i + 1}", "type": "${i < Math.ceil(count / 2) ? 'technical' : 'behavioral'}"}`).join(',\n ')}
 ]
 `;
 
@@ -412,7 +421,34 @@ export const getUserInterviews = async (req, res) => {
             .sort({ createdAt: -1 });
         return res.json(interviews);
     } catch (error) {
-        console.error("Error getting user interviews:", error);
+        console.error("Error getting interviews:", error);
         return res.status(500).json({ error: "Failed to get interviews" });
+    }
+};
+
+// Associate an interview with a clerkId (for sign-in after demo completion)
+export const associateInterview = async (req, res) => {
+    const { interviewId, clerkId } = req.body;
+
+    try {
+        if (!interviewId || !clerkId) {
+            return res.status(400).json({ error: "interviewId and clerkId are required" });
+        }
+
+        const interview = await Demo.findById(interviewId);
+        if (!interview) {
+            return res.status(404).json({ error: "Interview not found" });
+        }
+
+        // Only associate if it's not already associated
+        if (!interview.clerkId) {
+            interview.clerkId = clerkId;
+            await interview.save();
+        }
+
+        return res.json({ success: true, interview });
+    } catch (error) {
+        console.error("Error associating interview:", error);
+        return res.status(500).json({ error: "Failed to associate interview" });
     }
 };
