@@ -21,7 +21,7 @@ const Kcb = () => {
                     The problem? Only a tiny fraction of applicants make it through. Only 2% of applicants actually make it into the top graduate trainee programmes at Kenya's major banks  that's roughly 200 spots out of 10,000+ applications across Equity Bank, KCB, and Cooperative Bank combined.
                 </p>
                 <p className="text-gray-800 text-lg leading-relaxed mb-6">
-                    Most people who fail do not fail because they are unqualified. They fail because they are underprepared for the interview process.
+                    Most people who fail do not fail because they are unqualified. They fail because they are underprepared for the interview process. to preper for KCB interview question or any other interview (<a href="https://interviewwace.com" className="text-[#EFBF04] font-semibold">free interview prep</a>).
                 </p>
                 <p className="text-gray-800 text-lg leading-relaxed mb-6">
                     This guide gives you the complete KCB Graduate Trainee hiring process, the exact interview questions that come up repeatedly, and the best way to answer each one  so you can walk into your KCB interview ready to perform.
@@ -139,7 +139,7 @@ const Kcb = () => {
                     KCB invests heavily in trainees. They want candidates who plan to grow within the bank, not leave after two years.
                 </p>
                 <p className="text-gray-800 text-lg leading-relaxed mb-6 italic">
-                    "In five years, I want to have completed the Management Trainee Programme and progressed into a senior analyst or relationship management role. I am particularly interested in KCB's corporate banking division and the work being done in trade finance across East Africa. Longer term, I would like to be in a leadership position where I am helping develop the next generation of banking talent at KCB - the way this programme is developing me."
+                    "In five years, I want to have completed the Management Trainee Programme and progressed into a senior analyst or relationship management role. I am particularly interested in KCB's corporate banking division and the work being done in trade finance across East Africa. Longer term, I would like to be in a leadership position where I am helping develop the next generation of banking talent at KCB - the way this programme is developing me." get to know how to answer this question in detail (<a href="https://interviewwace.com" className="text-[#EFBF04] font-semibold">free interview prep</a>).
                 </p>
 
                 <hr className="my-8" />
