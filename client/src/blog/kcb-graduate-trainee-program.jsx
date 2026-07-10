@@ -27,6 +27,11 @@ const Kcb = () => {
                     This guide gives you the complete KCB Graduate Trainee hiring process, the exact interview questions that come up repeatedly, and the best way to answer each one  so you can walk into your KCB interview ready to perform.
                 </p>
 
+                <h1 className="text-3xl font-bold text-[#EFBF04]">How much does a KCB Graduate Trainee get paid</h1>
+                <p className="text-gray-800 mt-3 leading-relaxed text-lg ">New KCB graudate trainees earn between <strong>70,000 to 80,000</strong> per month, They also get bonouses depending on preformance. 
+                    but once the trainee has been absorped by the bank the earnings increase to <strong>85,000 and 102,000</strong>. AS once 
+                    continues to climbe the ladder the earning are way higher and also the benefits increase.    </p>
+
                 <hr className="my-8" />
 
                 <h2 className="text-3xl font-bold text-[#EFBF04] mt-8 mb-4">What Is the KCB Graduate Trainee Programme?</h2>
@@ -60,9 +65,9 @@ const Kcb = () => {
 
                 <hr className="my-8" />
 
-                <h2 className="text-3xl font-bold text-[#EFBF04] mt-8 mb-4">The Full KCB Graduate Trainee Hiring Process (Step by Step)</h2>
+                <h2 className="text-3xl font-bold text-[#EFBF04] mt-8 mb-4">The Full KCB Graduate Trainee Hiring Process (Step by Step) </h2>
                 <p className="text-gray-800 text-lg leading-relaxed mb-6">
-                    Understanding the process before you start is critical. The KCB interview process has three stages: aptitude assessment, group discussion, and a final panel interview. The process takes about a month overall, with friendly interviewers who are keen on punctuality and professional presentation.
+                    Understanding the process before you start is critical. The KCB interview process has three stages: aptitude assessment, group discussion, and a final panel interview. The process takes about a month overall, with friendly interviewers who are keen on punctuality and professional presentation (<a href="https://interviewwace.com" className="text-[#EFBF04] font-semibold">free interview prep</a>).
                 </p>
                 <ul className="list-disc list-inside text-gray-800 text-lg leading-relaxed mb-6 space-y-2">
                     <li><strong>Stage 1: Online Application</strong> - Applications are submitted through the KCB careers portal at <strong>irecruitment.kcbgroup.com</strong>. You will need to upload your CV, cover letter, and academic transcripts.</li>
