@@ -31,6 +31,7 @@ import HowToLandAJobInKenya from './blog/how-To-Land-a-Job-in-Kenya'
 import Kcb from './blog/kcb-graduate-trainee-program'
 import EquityBank from './blog/equity-bank-interview-questions'
 import CommonInterviewQuestions from './blog/common-interview-questions'
+import Cooperative from './blog/co-operative-graduate-trainee-program'
 export const backendUrl = import.meta.env.VITE_BACKEND_URL
 function App() {
   
@@ -66,6 +67,7 @@ function App() {
       <Route path='/kcb-graduate-trainee-program' element={<Kcb/>} />
       <Route path='/equity-bank-interview-question' element={<EquityBank/>} />
       <Route path='/common-interview-questions' element={<CommonInterviewQuestions/>} />
+      <Route path='/co-operative-graduate-trainee-program' element={<Cooperative/>} />
     </Routes>
    
     </>
