@@ -16,7 +16,7 @@ const EquityBank = () => {
           Landing a job at Equity Bank Kenya is one of the most competitive career achievements a Kenyan graduate can aim for. Equity Bank is one of the oldest banks in Kenya, founded in 1984 as the Equity Building Society, and has grown into one of the best-known banks in Kenya and Africa, with 20 million active customers as of 2025, operating in six other African states including Congo, Rwanda, South Sudan, Sudan, Tanzania, and Uganda.
         </p>
         <p className="text-gray-800 text-lg leading-relaxed mb-6">
-          With that scale comes fierce competition for every role — especially the Graduate Trainee Programme. Thousands of fresh graduates apply each cycle. Only a handful make it through.
+          With that scale comes fierce competition for every role — especially the Graduate Trainee Programme. Thousands of fresh graduates apply each cycle. Only a handful make it through (<a href="https://interviewwace.com" rel="nofollow"  className="text-[#EFBF04] font-semibold">free interview prep</a>).
         </p>
         <p className="text-gray-800 text-lg leading-relaxed mb-6">
           The difference between the candidates who get in and those who do not almost always comes down to one thing: interview preparation.
@@ -48,7 +48,7 @@ const EquityBank = () => {
             <li>Must satisfy Chapter Six of the Kenya Constitution (integrity, anti-corruption)</li>
             <li>Clean background — no criminal record or pending charges</li>
             <li>Strong interpersonal and teamwork skills</li>
-            <li>Demonstrated passion for financial inclusion and community impact</li>
+            <li>Demonstrated passion for financial inclusion and community impact (<a href="https://interviewwace.com" className="text-[#EFBF04] font-semibold">free interview prep</a>)</li>
           </ul>
         </div>
         <p className="text-gray-800 text-lg leading-relaxed mb-6">
@@ -310,21 +310,10 @@ const EquityBank = () => {
 
         <hr className="my-8" />
 
-        <h3 className="text-2xl font-semibold text-[#EFBF04] mt-6 mb-2">13. Tell us about a time you demonstrated integrity.</h3>
-        <p className="text-gray-800 text-lg leading-relaxed mb-6">
-          Equity Bank places enormous emphasis on integrity — it is embedded in their culture going back to the bank's founding mission of serving the underserved without exploiting them.
-        </p>
-        <p className="text-gray-800 text-lg leading-relaxed mb-6">
-          <strong>Example answer (STAR):</strong> "During my internship, I discovered an overpayment in a client's account — KSh 12,000 had been credited twice due to a system duplication. The error had not been noticed by anyone else and would likely have gone undetected. I flagged it immediately to my supervisor and documented the discovery formally. I did not consider any alternative. The account was corrected and the client was notified. My supervisor commended the discovery and it was recorded in my internship performance review. For me, integrity is not a decision you make in difficult situations — it is a habit you build in easy ones."
-        </p>
+        
+        
 
-        <hr className="my-8" />
-
-        <div className="text-center">
-          <a href="/" target="_blank" rel="nofollow noopener noreferrer" className="inline-block bg-[#EFBF04] text-black px-8 py-4 rounded-full text-lg font-bold hover:bg-white hover:shadow-[0px_0px_30px_14px] hover:shadow-[#EFBF04]/50 shadow-[0px_0px_30px_7px] shadow-[#EFBF04]/20 transition-all duration-300 transform hover:scale-105">
-            Start practicing interviews now
-          </a>
-        </div>
+       
       </div>
     </div>
   );
