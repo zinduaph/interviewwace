@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import './button.css'
+import growth from "../assets/download (2).webp"
 const Preview = () => {
     const Testimonils = [
         {
@@ -56,7 +57,23 @@ const Preview = () => {
          </Link>
 
         </div>
- 
+
+
+
+
+        <div className='flex flex-col border border-gray-500 p-6 w-100 md:w-250 m-auto rounded-sm md:flex-row gap-3 justify-center mt-25'>
+            <div>
+                <img src={growth} className='rounded-md' width={250} alt="" />
+            </div>
+
+            <div className=''>
+                <h1 className='text-gray-500 mt-4 font-semibold text-3xl md:text-4xl'>Plant you <span  className='text-[#EFBF04]'>career seed</span> today!</h1>
+                <p className='text-white mt-3 text-lg'>Passing job interviews made easy by <span className='text-[#EFBF04]'>interviewwace</span></p>
+            </div>
+        </div>
+                      <div className='mt-6 flex justify-center'>
+                          <Link to='/interview'>    <button className='bg-[#EFBF04] w-40 md:w-60 text-black p-2 font-semibold rounded-md hover:cursor-pointer'>start practicing</button></Link>
+                        </div>  
         </div>
         </>
     )

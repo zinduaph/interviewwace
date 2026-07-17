@@ -216,7 +216,7 @@ const submitPhone = async (e) => {
         <div className="bg-black min-h-screen">
             <Navbar/>
 
-            <p className="mt-15 text-center text-gray-300 text-3xl md:text-4xl">Choose the interview scenario that best fits your <span className="text-[#EFBF04] font-bold">needs</span> and <span className="text-[#EFBF04] font-bold">goals</span></p>
+            <p className="mt-15 text-center text-gray-300 text-2xl md:text-4xl">Choose the interview scenario that best fits your <span className="text-[#EFBF04] font-bold">needs</span> and <span className="text-[#EFBF04] font-bold">goals</span></p>
                 {paymentStatus && (
                     <div className="mt-4 text-center">
                         <p className={`text-lg font-semibold ${paymentStatus.status === 'success' ? 'text-green-400' : paymentStatus.status === 'error' ? 'text-red-400' : 'text-yellow-400'}`}>
@@ -224,7 +224,7 @@ const submitPhone = async (e) => {
                         </p>
                     </div>
                 )}
-            <div className="grid grid-cols-1 mt-15 md:grid-cols-3 gap-3 p-5 md:gap-4 justify-around">
+            <div className="grid grid-cols-1 mt-15 md:grid-cols-3 gap-6 p-5 md:gap-4 justify-around">
                 {pricingPlans.map((plan, index) => (
                     <div key={index} className="border border-gray-700 bg-gray-800/50 rounded-md w-60 md:w-90 flex flex-col gap-3 p-6 shadow-[#EFBF04]/50 shadow-md">
                         <h3 className="text-3xl text-[#EFBF04]">{plan.name}</h3>
