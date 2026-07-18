@@ -16,7 +16,7 @@ const Hero = () => {
             <div className="relative z-10 flex flex-col items-center m-auto gap-4 px-4">
                 
 
-                <div className='flex flex-col gap-3 md:flex-row'>
+                <div className='flex flex-col gap-5 md:gap-4 md:flex-row'>
                     <div> <img src={main} className='rounded-md' width={400} alt="" /></div>
 
                     <div className='mt-4'>
