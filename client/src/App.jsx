@@ -32,6 +32,7 @@ import Kcb from './blog/kcb-graduate-trainee-program'
 import EquityBank from './blog/equity-bank-interview-questions'
 import CommonInterviewQuestions from './blog/common-interview-questions'
 import Cooperative from './blog/co-operative-graduate-trainee-program'
+import TechnicalInterview from './blog/technicalInterview'
 export const backendUrl = import.meta.env.VITE_BACKEND_URL
 function App() {
   
@@ -68,6 +69,7 @@ function App() {
       <Route path='/equity-bank-interview-question' element={<EquityBank/>} />
       <Route path='/common-interview-questions' element={<CommonInterviewQuestions/>} />
       <Route path='/co-operative-graduate-trainee-program' element={<Cooperative/>} />
+       <Route path='/technicalInterview' element={<TechnicalInterview/>} />
     </Routes>
    
     </>
