@@ -310,7 +310,14 @@ const EquityBank = () => {
 
         <hr className="my-8" />
 
-        
+        <p className="text-gray-800 text-lg leading-relaxed mb-6">Looking for more Kenya-specific interview prep? Read:</p>
+                <ul className="list-disc list-inside text-gray-800 text-lg leading-relaxed mb-6 space-y-2">
+                    <li className=" "><a href="https://interviewwace.com/safaricom-interview-questions-kenya" target="_blank" rel='nofollow' rel="noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">Safaricom Interview Questions and Answers (2025)</a></li>
+                    <li className=""><a href="https://interviewwace.com/technicalInterview" target="_blank" rel='nofollow' rel="noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">7 reasons why people fail their technical interviewa in kenya</a></li>
+                    <li className=""><a href="https://interviewwace.com/common-interview-questions" target="_blank" rel='nofollow' rel="noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">Common Interview Questions and Answers</a></li>
+                    <li className=""><a href="https://interviewwace.com/how-to-land-a-job-in-kenya" target="_blank" rel='nofollow' rel="noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">How to land a job in kenya</a></li>
+                    
+                </ul>
         
 
        

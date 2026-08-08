@@ -338,6 +338,14 @@ const SafaricomInterview = () => {
                 </ul>
 
                 <hr className="my-8" />
+                <p className="text-gray-800 text-lg leading-relaxed mb-6">Looking for more Kenya-specific interview prep? Read:</p>
+                <ul className="list-disc list-inside text-gray-800 text-lg leading-relaxed mb-6 space-y-2">
+                    <li className=""><a href="https://interviewwace.com/technicalInterview" target="_blank" rel='nofollow' rel="noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">7 reasons why people fail their technical interviewa in kenya</a></li>
+                    <li className=""><a href="https://interviewwace.com/equity-bank-interview-question" target="_blank" rel='nofollow' rel="noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">Equity Bank Interview Questions and Answers (2026)</a></li>
+                    <li className=""><a href="https://interviewwace.com/common-interview-questions" target="_blank" rel='nofollow' rel="noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">Common Interview Questions and Answers</a></li>
+                    <li className=""><a href="https://interviewwace.com/how-to-land-a-job-in-kenya" target="_blank" rel='nofollow' rel="noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">How to land a job in kenya</a></li>
+                    
+                </ul>
 
                 <p className="text-gray-600 text-base mb-6">
                     <strong>Tags:</strong> safaricom interview questions, safaricom interview questions and answers, safaricom interview process, how to prepare for safaricom interview, panel interview Kenya, competency based interview questions Kenya, interview questions Kenya, graduate trainee interview Kenya, M-Pesa interview questions, Safaricom graduate program Kenya
