@@ -24,6 +24,21 @@ app.use(cors());
 app.use('/api/payment/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
 
+// Cache-control middleware for static assets
+app.use((req, res, next) => {
+  const staticExtRE = /\.(?:js|css|png|jpg|jpeg|webp|svg|gif|ico|woff2?|ttf|eot)$/i;
+  if (req.path.startsWith('/assets/') || staticExtRE.test(req.path)) {
+    // If filename looks fingerprinted (contains a hex hash), set a long TTL
+    if (/[0-9a-f]{8,}\./i.test(req.path)) {
+      res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    } else {
+      // Shorter caching for non-fingerprinted assets
+      res.set('Cache-Control', 'public, max-age=3600, must-revalidate');
+    }
+  }
+  next();
+});
+
 
 
 // Raw body for webhook verification

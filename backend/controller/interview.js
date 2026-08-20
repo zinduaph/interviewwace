@@ -41,7 +41,7 @@ const generateStaticQuestions = async (jobRole, experienceLevel, company) => {
     `;
 
     const response = await googleGenAI.chat.completions.create({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-120b",
         messages: [
             { 
                 role: "system", 
@@ -93,7 +93,7 @@ Return ONLY valid JSON:
 `;
 
     const response = await googleGenAI.chat.completions.create({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-120b",
         messages: [
             { 
                 role: "system", 
@@ -138,7 +138,7 @@ Return ONLY valid JSON:
 `;
 
     const response = await googleGenAI.chat.completions.create({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-120b",
         messages: [
             { 
                 role: "system", 
@@ -545,7 +545,7 @@ Return ONLY valid JSON:
 
             try {
                 const response = await googleGenAI.chat.completions.create({
-                    model: "llama-3.3-70b-versatile",
+                    model: "openai/gpt-oss-120b",
                     messages: [
                         { 
                             role: "system", 
@@ -622,7 +622,7 @@ Return ONLY valid JSON:
 
         try {
             const response = await googleGenAI.chat.completions.create({
-                model: "llama-3.3-70b-versatile",
+                model: "openai/gpt-oss-120b",
                 messages: [
                     { 
                         role: "system", 
@@ -772,7 +772,7 @@ Return ONLY valid JSON with a score from 0-100:
 
             try {
                 const response = await googleGenAI.chat.completions.create({
-                    model: "llama-3.3-70b-versatile",
+                    model: "openai/gpt-oss-120b",
                     messages: [
                         { 
                             role: "system", 
@@ -817,7 +817,7 @@ Return ONLY valid JSON:
 
         try {
             const response = await googleGenAI.chat.completions.create({
-                model: "llama-3.3-70b-versatile",
+                model: "openai/gpt-oss-120b",
                 messages: [
                     { 
                         role: "system", 
@@ -900,7 +900,7 @@ export const basicInterview = async (req, res) => {
         ]`;
 
         const response = await googleGenAI.chat.completions.create({
-            model: "llama-3.3-70b-versatile",
+            model: "openai/gpt-oss-120b",
             messages: [
                 { role: "system", content: "You are an expert interviewer. Respond with valid JSON only." },
                 { role: "user", content: prompt }

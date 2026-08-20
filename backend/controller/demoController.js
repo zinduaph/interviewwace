@@ -138,7 +138,7 @@ Return ONLY valid JSON array with ${count} objects:
 `;
 
         const response = await googleGenAI.chat.completions.create({
-            model: "llama-3.3-70b-versatile",
+            model: "openai/gpt-oss-120b",
             messages: [
                 { 
                     role: "system", 
@@ -255,7 +255,7 @@ Return ONLY valid JSON:
 
             try {
                 const response = await googleGenAI.chat.completions.create({
-                    model: "llama-3.3-70b-versatile",
+                    model: "openai/gpt-oss-120b",
                     messages: [
                         { 
                             role: "system", 
