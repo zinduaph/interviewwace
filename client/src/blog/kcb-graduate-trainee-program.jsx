@@ -289,10 +289,10 @@ const Kcb = () => {
                 <hr className="my-8" />
                 <p className="text-gray-800 text-lg leading-relaxed mb-6">Looking for more Kenya-specific interview prep? Read:</p>
                 <ul className="list-disc list-inside text-gray-800 text-lg leading-relaxed mb-6 space-y-2">
-                    <li className=" "><a href="https://interviewwace.com/safaricom-interview-questions-kenya" target="_blank" rel='nofollow' rel="noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">Safaricom Interview Questions and Answers (2026)</a></li>
-                    <li className=""><a href="https://interviewwace.com/co-operative-graduate-trainee-program" target="_blank" rel='nofollow' rel="noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">Co-operative Bank Graduate Trainee Programme</a></li>
-                    <li className=""><a href="https://interviewwace.com/equity-bank-interview-question" target="_blank" rel='nofollow' rel="noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">Equity Bank Interview Questions and Answers (2026)</a></li>
-                    <li className=""><a href="https://interviewwace.com/how-to-pass-job-interview-kenya-2026" target="_blank" rel='nofollow' rel="noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">How to Pass a Job Interview in Kenya (2026)</a></li>
+                    <li className=" "><a href="https://interviewwace.com/safaricom-interview-questions-kenya" target="_blank" rel="nofollow noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">Safaricom Interview Questions and Answers (2026)</a></li>
+                    <li className=""><a href="https://interviewwace.com/co-operative-graduate-trainee-program" target="_blank" rel="nofollow noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">Co-operative Bank Graduate Trainee Programme</a></li>
+                    <li className=""><a href="https://interviewwace.com/equity-bank-interview-question" target="_blank" rel="nofollow noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">Equity Bank Interview Questions and Answers (2026)</a></li>
+                    <li className=""><a href="https://interviewwace.com/how-to-pass-job-interview-kenya-2026" target="_blank" rel="nofollow noopener noreferrer" className="text-[#EFBF04] font-semibold underline decoration-2 underline-offset-2 hover:text-[#d8a900]">How to Pass a Job Interview in Kenya (2026)</a></li>
                     
                 </ul>
 

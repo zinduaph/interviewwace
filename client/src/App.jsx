@@ -33,6 +33,7 @@ import EquityBank from './blog/equity-bank-interview-questions'
 import CommonInterviewQuestions from './blog/common-interview-questions'
 import Cooperative from './blog/co-operative-graduate-trainee-program'
 import TechnicalInterview from './blog/technicalInterview'
+import HowAIWillAffectTheJobMarket from './blog/how-AI-will-affect-the-job-market'
 // Use `VITE_BACKEND_URL` if provided at build time, otherwise use same-origin
 export const backendUrl = import.meta.env.VITE_BACKEND_URL || ''
 function App() {
@@ -71,6 +72,8 @@ function App() {
       <Route path='/common-interview-questions' element={<CommonInterviewQuestions/>} />
       <Route path='/co-operative-graduate-trainee-program' element={<Cooperative/>} />
        <Route path='/technicalInterview' element={<TechnicalInterview/>} />
+       <Route path='/how-AI-will-affect-the-job-market' element={<HowAIWillAffectTheJobMarket/>} />
+
     </Routes>
    
     </>
