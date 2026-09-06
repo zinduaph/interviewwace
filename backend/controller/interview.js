@@ -4,6 +4,9 @@ import InterviewPayment from "../model/interviewPayment.js";
 import Demo from "../model/demo.js";
 import User from "../model/user.js";
 import { checkAndIncrementUsage } from "../utils/apilimit.js";
+import { extractCvText } from "./practice.js";
+
+const limitContext = (value, maxLength = 12000) => (value || '').trim().slice(0, maxLength);
 // Helper function to generate static questions (Basic Plan)
 const generateStaticQuestions = async (jobRole, experienceLevel, company) => {
     //this is for checking the AI model request usage
@@ -62,7 +65,7 @@ const generateStaticQuestions = async (jobRole, experienceLevel, company) => {
 };
 
 // Helper function to generate first chat question (Standard & Premium Plans)
-const generateChatQuestion = async (jobRole, experienceLevel, questionType, context = "", previousQuestions = [] ) => {
+const generateChatQuestion = async (jobRole, experienceLevel, questionType, context = "", previousQuestions = [], candidateContext = {} ) => {
      //this is for checking the AI model request usage
     await checkAndIncrementUsage()
     const typePrompts = {
@@ -81,6 +84,11 @@ const generateChatQuestion = async (jobRole, experienceLevel, questionType, cont
 
 Job Role: ${jobRole}
 Experience Level: ${experienceLevel || "entry-level"}
+Job Description:
+${limitContext(candidateContext.jobDescription)}
+
+Candidate CV:
+${limitContext(candidateContext.cvText)}
 
 Ask ONE ${questionType} question.
 ${context ? `Previous context: ${context}` : ''}
@@ -120,17 +128,25 @@ Return ONLY valid JSON:
 };
 
 // Helper function to generate follow-up question
-const generateFollowUp = async (jobRole, previousAnswer, questionType) => {
+const generateFollowUp = async (jobRole, originalQuestion, previousAnswer, questionType, candidateContext = {}) => {
     //this is for checking the AI model request usage
     await checkAndIncrementUsage()
     const prompt = `Based on the candidate's answer, ask ONE brief follow-up question, then ask a different
  question.
 
 Job Role: ${jobRole}
+Job Description:
+${limitContext(candidateContext.jobDescription)}
+
+Candidate CV:
+${limitContext(candidateContext.cvText)}
+Original Question:
+${originalQuestion}
 Previous Answer: ${previousAnswer}
 Question Type: ${questionType}
 
-Keep the follow-up short and focused.
+Ask one specific follow-up about an important detail missing from the answer.
+Keep it short and focused. Do not ask the candidate to generally elaborate.
 Do NOT repeat the original question.
 
 Return ONLY valid JSON:
@@ -152,19 +168,23 @@ Return ONLY valid JSON:
 
     const text = response.choices[0].message.content;
     try {
-        const jsonMatch = text.match(/\{"[^"]+"\s*:/);
-        if (jsonMatch) {
-            return JSON.parse(text);
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        const followUpData = JSON.parse(jsonMatch?.[0] || text);
+
+        if (typeof followUpData.followUp === 'string' && followUpData.followUp.trim()) {
+            return followUpData;
         }
     } catch {
-        return { followUp: "Can you elaborate more on that?", intent: "Get more details" };
+        // Use a safe question when the model returns malformed or non-JSON output.
     }
+
+    return { followUp: "What specific example from your experience demonstrates that?", intent: "Request a concrete example" };
 };
 
 // Create paid interview based on plan type
 export const createPaidInterview = async (req, res) => {
     const { 
-        jobRole, experienceLevel, clerkId, paymentId, company, 
+        jobRole, experienceLevel, clerkId, paymentId, company, jobDescription,
         plan, difficulty 
     } = req.body;
       
@@ -217,6 +237,18 @@ if (user.interviewsUsed >= 3) {
             return res.status(400).json({ error: "Invalid plan type" });
         }
 
+        let cvText = '';
+        if (selectedPlan !== 'count down interview') {
+            if (!jobDescription?.trim() || !req.file) {
+                return res.status(400).json({ error: "Job description and CV are required for a chat interview" });
+            }
+
+            cvText = await extractCvText(req.file);
+            if (!cvText) {
+                return res.status(400).json({ error: "Could not extract text from this CV" });
+            }
+        }
+
        
 
         // Check for existing active interview
@@ -251,7 +283,14 @@ if (user.interviewsUsed >= 3) {
             // Standard & Premium: Start with first chat question
             const questionTypes = ['technical-concept', 'behavioral', 'problem-solving'];
             const firstType = questionTypes[0];
-            firstQuestion = await generateChatQuestion(jobRole, experienceLevel, firstType, "", []);
+            firstQuestion = await generateChatQuestion(
+                jobRole,
+                experienceLevel,
+                firstType,
+                "",
+                [],
+                { jobDescription, cvText }
+            );
             
             // Add initial AI question to chat
             chatMessages = [{
@@ -269,6 +308,8 @@ if (user.interviewsUsed >= 3) {
             interviewMode,
             jobRole,
             company: company || "",
+            jobDescription: jobDescription || "",
+            cvText,
             experienceLevel: experienceLevel || 'entry-level',
             difficulty: difficulty || 'medium',
             questions: interviewMode === 'static' ? questions : [],
@@ -359,7 +400,7 @@ export const submitChatAnswer = async (req, res) => {
         // FIX #5: Use find() + reverse() instead of findLast() for Node <18 compatibility
         const currentQuestion = [...interview.chatMessages]
             .reverse()
-            .find(m => m.role === 'assistant' && !m.isFollowUp);
+            .find(m => m.role === 'assistant');
 
         // Capture lastCompleted BEFORE the push to correctly detect follow-up vs main answer
         const lastCompleted = interview.completedQuestions[interview.completedQuestions.length - 1];
@@ -389,7 +430,8 @@ export const submitChatAnswer = async (req, res) => {
         const isLastAnswer = totalQuestionsAsked >= 9;
 
 
-        const canContinue = interview.canContinueChat();
+        const shouldAskFollowUp = !currentQuestion?.isFollowUp
+            && updatedLastCompleted.followUpCount < 1;
 
         let nextMessage = null;
         let shouldContinue = false;
@@ -398,16 +440,18 @@ export const submitChatAnswer = async (req, res) => {
             // ✅ 9th answer just saved — don't generate anything more, just close out
             shouldContinue = false;
             nextMessage = null;
-        } else if (canContinue) {
-            // Generate a follow-up for the current answer
+        } else if (shouldAskFollowUp) {
+            // Ask at most one targeted follow-up for each main question.
             const previousQuestions = interview.chatMessages
                 .filter(m => m.role === 'assistant' && !m.isFollowUp)
                 .map(m => m.content);
 
             const followUpData = await generateFollowUp(
                 interview.jobRole,
+                updatedLastCompleted.question,
                 answer,
-                updatedLastCompleted.type
+                updatedLastCompleted.type,
+                { jobDescription: interview.jobDescription, cvText: interview.cvText }
             );
 
             nextMessage = {
@@ -440,7 +484,8 @@ export const submitChatAnswer = async (req, res) => {
                         interview.experienceLevel,
                         nextType,
                         "",
-                        previousQuestions
+                        previousQuestions,
+                        { jobDescription: interview.jobDescription, cvText: interview.cvText }
                     ) 
                     nextMessage = {
                         role: "assistant",

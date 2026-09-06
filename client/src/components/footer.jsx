@@ -37,7 +37,7 @@ const Footer = () => {
                 </div>
                 <div>
                     <h1 className='text-2xl text-[#EFBF04]'>Contact</h1>
-                    <p className='text-gray-300 font-semibold'>tajirindirangu@gmail.com</p>
+                    <p className='text-gray-300 font-semibold'>megwn88@gmail.com</p>
                     <p className='text-gray-300 font-semibold'>+254 746508463</p>
                 </div>
                 <div>

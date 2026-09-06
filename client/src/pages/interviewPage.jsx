@@ -1,4 +1,4 @@
-import { Briefcase, TrendingUp, Send, MessageCircle, CheckCircle, Clock, ArrowRight, ArrowLeft } from "lucide-react"
+import { Briefcase, TrendingUp, Send, MessageCircle, CheckCircle, Clock, ArrowRight, ArrowLeft, FileText, Upload } from "lucide-react"
 import { useState, useEffect , useRef} from "react"
 import Navbar from "../components/navbar"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -25,6 +25,8 @@ const InterviewPage = () => {
     
     const [experienceLevel, setExperienceLevel] = useState('entry-level')
     const [jobRole, setJobRole] = useState('')
+    const [jobDescription, setJobDescription] = useState('')
+    const [cvFile, setCvFile] = useState(null)
     const [loading, setLoading] = useState(false)
     const [interview, setInterview] = useState(null)
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -35,6 +37,7 @@ const InterviewPage = () => {
     const [interviewMode, setInterviewMode] = useState(null) // 'static' or 'chat'
     const [chatComplete, setChatComplete] = useState(false)
     const [pasteWarning, setPasteWaring] = useState(false)
+    const isChatInterview = plan === 'chat interview' || plan === 'mock interview'
 
     // Timer state - 90 seconds
         const [timeLeft, setTimeLeft] = useState(180);
@@ -95,15 +98,31 @@ const InterviewPage = () => {
             alert('Please enter a job role')
             return
         }
+
+        if (isChatInterview && (!jobDescription.trim() || !cvFile)) {
+            toast.error('Please enter the job description and upload your CV')
+            return
+        }
         
         setLoading(true)
         try {
-            const response = await axios.post(`${backendUrl}/api/interview/paid/create`, {
-                jobRole: jobRole,
-                experienceLevel: experienceLevel,
+            const requestData = isChatInterview ? new FormData() : {
+                jobRole,
+                experienceLevel,
                 clerkId: user?.id,
                 plan: plan || 'count down interview'
-            })
+            }
+
+            if (isChatInterview) {
+                requestData.append('jobRole', jobRole)
+                requestData.append('experienceLevel', experienceLevel)
+                requestData.append('clerkId', user?.id || '')
+                requestData.append('plan', plan || 'chat interview')
+                requestData.append('jobDescription', jobDescription)
+                requestData.append('cv', cvFile)
+            }
+
+            const response = await axios.post(`${backendUrl}/api/interview/paid/create`, requestData)
             
             if (response.data.success) {
                 // Clear any old paymentId and set the new one
@@ -320,6 +339,8 @@ const InterviewPage = () => {
         setFeedback(null)
         setPaymentId(null)
         setJobRole('')
+        setJobDescription('')
+        setCvFile(null)
         setChatAnswer('')
         setAnswers({})
         setCurrentQuestionIndex(0)
@@ -554,6 +575,7 @@ const InterviewPage = () => {
                                     value={jobRole}
                                     onChange={(e) => setJobRole(e.target.value)}
                                     className="w-full bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-[#EFBF04] focus:ring-1 focus:ring-[#EFBF04] outline-none transition-all"
+                                    required
                                 />
                             </div>
                             <div>
@@ -571,6 +593,37 @@ const InterviewPage = () => {
                                     <option value="senior">Senior Level (5+ years)</option>
                                 </select>
                             </div>
+                            {isChatInterview && (
+                                <>
+                                    <div className="mt-4">
+                                        <label className="block text-white font-medium mb-2">
+                                            <FileText className="inline w-4 h-4 mr-2" />
+                                            Job description
+                                        </label>
+                                        <textarea
+                                            value={jobDescription}
+                                            onChange={(e) => setJobDescription(e.target.value)}
+                                            placeholder="Paste the job description here"
+                                            className="w-full min-h-32 bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-[#EFBF04] focus:ring-1 focus:ring-[#EFBF04] outline-none transition-all resize-y"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mt-4">
+                                        <label className="block text-white font-medium mb-2">
+                                            <Upload className="inline w-4 h-4 mr-2" />
+                                            CV (PDF or DOCX)
+                                        </label>
+                                        <input
+                                            type="file"
+                                            accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                            onChange={(e) => setCvFile(e.target.files?.[0] || null)}
+                                            className="w-full text-sm text-gray-300 file:mr-4 file:rounded-lg file:border-0 file:bg-[#EFBF04] file:px-4 file:py-2 file:font-semibold file:text-black hover:file:bg-[#d4a700]"
+                                            required
+                                        />
+                                        {cvFile && <p className="mt-2 text-sm text-gray-400">Selected: {cvFile.name}</p>}
+                                    </div>
+                                </>
+                            )}
                         </div>
                         
                         <div className="flex justify-center mt-6">

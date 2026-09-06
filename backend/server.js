@@ -14,6 +14,8 @@ import paymentRoutes from './routes/paymentRoutes.js';
 import interviewRoutes from './routes/interviewRoutes.js';
 import { startNgrok } from './utils/ngrok-config.js';
 import ApiRoute from './routes/ApiRoute.js';
+import connectCloudinary from './config/cloudinary.js';
+import practiceRouter from './routes/practiceRoute.js';
 
 
 
@@ -30,6 +32,7 @@ app.use(express.json());
 app.use('/api/users/sync', express.raw({ type: 'application/json' }));
 
 connectDB();
+connectCloudinary();
 
 // Start ngrok for M-Pesa callbacks
 
@@ -39,6 +42,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/demo', demoRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/interview', interviewRoutes);
+app.use('/api/practice',practiceRouter)
 app.use('/api',ApiRoute)
 
 app.get('/', (req, res) => {

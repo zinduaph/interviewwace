@@ -5,7 +5,7 @@ import { X } from "lucide-react"
 import { useUser } from "@clerk/react"
 import axios from "axios"
 import { backendUrl } from "../App"
-import { useNavigate } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 
 
@@ -123,13 +123,12 @@ const submitPhone = async (e) => {
    }
     const pricingPlans = [
         {
-            name: 'count down interview',
+            name: ' interview Report',
             price: 'Benefites',
             features: [
-                "1.Help you to know to answer questions under pressure",
-                "2. Help's you to improve your time management skills during interviews",
-                "3. Boost your confidence and reduce anxiety by simulating real interview conditions",
-
+                "1. Receive a detailed report of your interview performance, including strengths, weaknesses, and areas for improvement.",
+                "2. Get personalized feedback and actionable insights to help you prepare for future interviews.",
+                "3. Understand how your responses were perceived by the interviewer and what you can do to improve.",
 
             ],
             
@@ -234,9 +233,15 @@ const submitPhone = async (e) => {
                                 <li className="text-gray-300 text-sm" key={featureIndex}>{feature}</li>
                             ))}
                         </ul>
-                        <button onClick={() => { setSelectedPlan(plan); setPayModel(true); }} className="bg-[#EFBF04] cursor-pointer text-black font-bold py-2 px-4 rounded-md hover:bg-[#d4a700]">
-                            Get started
-                        </button>
+                        {index === 0 ? (
+                            <NavLink to="/report" className="bg-[#EFBF04] cursor-pointer text-center text-black font-bold py-2 px-4 rounded-md hover:bg-[#d4a700]">
+                                Get started
+                            </NavLink>
+                        ) : (
+                            <button onClick={() => { setSelectedPlan(plan); setPayModel(true); }} className="bg-[#EFBF04] cursor-pointer text-black font-bold py-2 px-4 rounded-md hover:bg-[#d4a700]">
+                                Get started
+                            </button>
+                        )}
                     </div>
                 ))}
 

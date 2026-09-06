@@ -15,7 +15,7 @@ export const checkAndIncrementUsage = async (req,res) => {
             $inc: { requestCount: 1 },
             $set: { lastUpdated: new Date() }
         },
-        { upsert: true, new: true })
+        { upsert: true, returnDocument: 'after' })
         if(usage.requestCount > SAFE_LIMIT){
             return res.json({message:"reached Daily limit try again tommorow"})
         }

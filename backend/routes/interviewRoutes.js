@@ -1,4 +1,6 @@
 import express from 'express';
+import multer from 'multer';
+
 import { 
     createPaidInterview, 
     submitStaticAnswers,
@@ -13,10 +15,31 @@ import {
 
 const router = express.Router();
 
+const cvUpload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, callback) => {
+        const allowedTypes = [
+            'application/pdf',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        ];
+
+        if (!allowedTypes.includes(file.mimetype)) {
+            return callback(new multer.MulterError('LIMIT_UNEXPECTED_FILE', 'cv'));
+        }
+
+        callback(null, true);
+    }
+});
+
+
+
+
+
 // ==================== PAID INTERVIEW ROUTES ====================
 
 // Create paid interview (supports plan: basic, standard, premium)
-router.post('/paid/create', createPaidInterview);
+router.post('/paid/create', cvUpload.single('cv'), createPaidInterview);
 
 // Submit static answers (Basic plan - 6 questions at once)
 router.post('/paid/submit-static', submitStaticAnswers);

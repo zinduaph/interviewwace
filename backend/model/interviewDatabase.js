@@ -100,6 +100,14 @@ const paidInterviewSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    jobDescription: {
+        type: String,
+        default: ""
+    },
+    cvText: {
+        type: String,
+        default: ""
+    },
     experienceLevel: { 
         type: String, 
         default: 'entry-level',
